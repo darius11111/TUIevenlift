@@ -164,24 +164,37 @@ void program(const size_t n, const char* filename) {
 }
 
 int main() {
-  initscr();
+  WINDOW *main_win;
+  main_win = initscr();
+
+  if (!has_colors()) {
+      printf("ERROR:\tYour Terminal does not support Colour!");
+      endwin();
+      return 1;
+  }
+
+  start_color();
+  init_pair(1, COLOR_WHITE, COLOR_BLACK);
+
   noecho();
   cbreak();
-  keypad(stdscr, TRUE);
+  keypad(main_win, TRUE);
+
+  wbkgd(main_win, COLOR_PAIR(1) | ' ');
 
   size_t highlight = 0;
   size_t choice;
 
   while (true) {
-    clear();
+    wclear(main_win);
     for (size_t i = 0; i<n_option; ++i) {
       if(i==highlight) attron(A_REVERSE);
       mvprintw(i+1, 1, menu[i]);
       if(i==highlight)
         attroff(A_REVERSE);
     }
-    refresh();
-    choice = getch();
+    wrefresh(main_win);
+    choice = wgetch(main_win);
 
     switch (choice) {
       case KEY_UP:
@@ -202,25 +215,25 @@ int main() {
 
 
         if (highlight == 0) {
-          clear();
+          wclear(main_win);
           read_file("upper_a.csv");
           program(1, "upper_a.csv");
         }
 
         if (highlight == 1) {
-          clear();
+          wclear(main_win);
           read_file("lower_a.csv");
           program(2, "lower_a.csv");
         }
 
         if (highlight == 2) {
-          clear();
+          wclear(main_win);
           read_file("upper_b.csv");
           program(3, "upper_b.csv");
         }
 
         if (highlight == 3) {
-          clear();
+          wclear(main_win);
           read_file("lower_b.csv");
           program(4, "lower_b.csv");
         }
