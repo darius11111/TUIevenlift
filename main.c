@@ -16,60 +16,16 @@ const char *menu[] = {
 };
 size_t n_option = getlen(menu);
 
-const char *exercises_UA[] = {
-  "Paused Larsen Press 2x3-5",
-  "Kroc Rows 2x4-8",
-  "Weighted Chinups 1x4-8",
-  "Strict BTN Press 1x4-6",
-  "Incline Curls 2x4-8",
-  "SA Tricep Pushdown 2x4-8",
-  "",
-  "Date(d/m/y):"
-};
-size_t e_option = getlen(exercises_UA);
-
-const char *exercises_UB[] = {
-  "Weighted Pull-ups 2x4-8",
-  "Weighted Dips 2x4-8",
-  "Cable Neck Extensions 2x8-12",
-  "Barbell Curls 2x4-8",
-  "SA Triceps Extension 2x4-8",
-  "Sit-Ups 1xAMRAP Weight BTN",
-  "Wrist Curls 1x8-10, Extensions 1x8-10",
-  "Date(d/m/y):"
-};
-
-const char *exercises_LA[] = {
-  "SLDLs 2x6-12",
-  "Zercher Bulgarian Split Squat 2x4-8",
-  "Full ROM SL Paused Calf Raises 1xAMRAP",
-  "Sissy squats 1xAMRAP",
-  "Neck Curls 1xAMRAP",
-  "",
-  "",
-  "Date(d/m/y):"
-};
-
-const char *exercises_LB[] = {
-  "Zercher Squat 2x4-8",
-  "Nordic Curls 2x6-10",
-  "DB Calf Raises 2xAMRAP",
-  "Zercher Jcurls 1x6-10",
-  "",
-  "",
-  "",
-  "Date(d/m/y):"
-};
-
 char values[EX_LEN][VALUE_LEN];
+char exercises[EX_LEN][VALUE_LEN];
 
-void read_file(const char *filename) {
+void read_file(const char *filename, char arr[EX_LEN][VALUE_LEN]) {
   FILE *fptr;
   fptr = fopen(filename, "r");
 
   if(!fptr) {
     for (size_t i = 0; i < EX_LEN; ++i)
-      strcpy(values[i], "");
+      strcpy(arr[i], "");
     return;
   }
 
@@ -78,7 +34,7 @@ void read_file(const char *filename) {
 
   while(i < EX_LEN && fgets(line, sizeof(line), fptr)) {
       line[strcspn(line, "\n")] = '\0';
-      strncpy(values[i], line, VALUE_LEN - 1);
+      strncpy(arr[i], line, VALUE_LEN - 1);
       i+=1;
     }
   fclose(fptr);
@@ -108,29 +64,29 @@ void program(const size_t n, const char* filename) {
     clear();
     mvprintw(0, 0, "Upper A\t\tC-S to save\t\tC-X to exit\t\t(AUTOSAVE ENABLED)");
 
-    for (size_t i = 0; i < e_option; ++i) {
+    for (size_t i = 0; i < EX_LEN; ++i) {
 
       if(n == 1) {
         if(h == i) attron(A_REVERSE);
-        mvprintw(i + 2, 2, "%-25s\t%-10s", exercises_UA[i], values[i]);
+        mvprintw(i + 2, 2, "%-25s\t%-10s", exercises[i], values[i]);
         if(h == i) attroff(A_REVERSE);
       }
 
       if(n == 2) {
         if(h == i) attron(A_REVERSE);
-        mvprintw(i + 2, 2, "%-25s\t%-10s", exercises_LA[i], values[i]);
+        mvprintw(i + 2, 2, "%-25s\t%-10s", exercises[i], values[i]);
         if(h == i) attroff(A_REVERSE);
       }
 
       if(n == 3) {
         if(h == i) attron(A_REVERSE);
-        mvprintw(i + 2, 2, "%-25s\t%-10s", exercises_UB[i], values[i]);
+        mvprintw(i + 2, 2, "%-25s\t%-10s", exercises[i], values[i]);
         if(h == i) attroff(A_REVERSE);
       }
 
       if(n == 4) {
         if(h == i) attron(A_REVERSE);
-        mvprintw(i + 2, 2, "%-25s\t%-10s", exercises_LB[i], values[i]);
+        mvprintw(i + 2, 2, "%-25s\t%-10s", exercises[i], values[i]);
         if(h == i) attroff(A_REVERSE);
       }
 
@@ -141,12 +97,12 @@ void program(const size_t n, const char* filename) {
     switch (ch) {
       case KEY_UP:
       case 'k':
-        h = (h == 0) ? e_option-1 : h - 1;
+        h = (h == 0) ? EX_LEN-1 : h - 1;
         break;
 
       case KEY_DOWN:
       case 'j':
-        h = (h == e_option - 1) ? 0 : h + 1;
+        h = (h == EX_LEN - 1) ? 0 : h + 1;
         break;
       case '\n':
         echo();
@@ -216,25 +172,29 @@ int main() {
 
         if (highlight == 0) {
           wclear(main_win);
-          read_file("upper_a.csv");
+          read_file("src/DAY_ONE.csv", exercises);
+          read_file("upper_a.csv", values);
           program(1, "upper_a.csv");
         }
 
         if (highlight == 1) {
           wclear(main_win);
-          read_file("lower_a.csv");
+          read_file("src/DAY_TWO.csv", exercises);
+          read_file("lower_a.csv", values);
           program(2, "lower_a.csv");
         }
 
         if (highlight == 2) {
           wclear(main_win);
-          read_file("upper_b.csv");
+          read_file("src/DAY_THREE.csv", exercises);
+          read_file("upper_b.csv", values);
           program(3, "upper_b.csv");
         }
 
         if (highlight == 3) {
           wclear(main_win);
-          read_file("lower_b.csv");
+          read_file("src/DAY_FOUR.csv", exercises);
+          read_file("lower_b.csv", values);
           program(4, "lower_b.csv");
         }
         
