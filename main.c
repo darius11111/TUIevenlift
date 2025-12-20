@@ -57,7 +57,7 @@ void program(const size_t n, const char* filename) {
   keypad(stdscr, TRUE);
   clear();
 
-  int ch = 0;
+  size_t ch = 0;
   size_t h = 0;
 
   while(ch != 24) {
