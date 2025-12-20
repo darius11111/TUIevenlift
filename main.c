@@ -53,8 +53,8 @@ const char *exercises_LA[] = {
 const char *exercises_LB[] = {
   "Zercher Squat 2x4-8",
   "Nordic Curls 2x6-10",
-  "DB Calf Raises 2x10-15",
-  "Seated Goodmornings 1x6-10",
+  "DB Calf Raises 2xAMRAP",
+  "Zercher Jcurls 1x6-10",
   "",
   "",
   "",
